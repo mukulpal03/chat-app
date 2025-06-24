@@ -1,13 +1,15 @@
-import express, { Express } from "express";
+import { WebSocketServer } from "ws";
 
-const app: Express = express();
+const wss = new WebSocketServer({ port: 3000 });
 
-app.use(express.json());
+wss.on("connection", function (ws) {
+  console.log("user connected");
 
-app.get("/", (req, res) => {
-  res.send("Hello World!");
-});
+  ws.send("first connect");
 
-app.listen(3000, () => {
-  console.log("Server is running on port 3000");
+  ws.on("message", (e) => {
+    wss.clients.forEach((client) => {
+      client.send(e.toString());
+    });
+  });
 });
