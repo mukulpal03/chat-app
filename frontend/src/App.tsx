@@ -11,20 +11,26 @@ function App() {
 
     socket.send(message);
 
-    console.log(messages);
-
-    socket.onmessage = function (e) {
-      console.log(e.data);
-
-      setMessages([...messages, e.data]);
-    };
-
     inputRef.current.value = "";
   }
 
   useEffect(() => {
     const ws = new WebSocket("ws://localhost:3000");
     setSocket(ws);
+
+    ws.onmessage = (e) => {
+      console.log(e.data);
+      setMessages((prevMessages) => [...prevMessages, e.data]);
+    };
+
+    return () => {
+      if (
+        ws.readyState === WebSocket.OPEN ||
+        ws.readyState === WebSocket.CONNECTING
+      ) {
+        ws.close();
+      }
+    };
   }, []);
 
   return (
