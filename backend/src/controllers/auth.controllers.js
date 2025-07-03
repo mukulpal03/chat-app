@@ -47,7 +47,7 @@ export const signup = async (req, res) => {
   }
 };
 
-export const login = (req, res) => {
+export const login = async (req, res) => {
   const { email, password } = req.body;
 
   if (!email || !password)
@@ -84,7 +84,7 @@ export const login = (req, res) => {
   }
 };
 
-export const logout = (req, res) => {
+export const logout = async (req, res) => {
   try {
     return res
       .status(200)
@@ -126,3 +126,6 @@ export const updateProfile = async (req, res) => {
     });
   }
 };
+
+export const checkAuth = async (req, res) =>
+  res.status(200).json({ success: true, user: req.user });
