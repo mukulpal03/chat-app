@@ -6,6 +6,7 @@ export const useAuthStore = create((set) => ({
   authUser: null,
   isSignInUp: false,
   isLoggingIn: false,
+  isUpdatingProfile: false,
 
   isCheckingAuth: true,
 
@@ -13,7 +14,7 @@ export const useAuthStore = create((set) => ({
     try {
       const res = await axiosInstance.get("/auth/check-auth");
 
-      set({ authUser: res.data });
+      set({ authUser: res.data.user });
     } catch (error) {
       console.error(error);
     } finally {
@@ -26,10 +27,10 @@ export const useAuthStore = create((set) => ({
 
     try {
       const res = await axiosInstance.post("/auth/signup", data);
-      set({ authUser: res.data });
+      set({ authUser: res.data.user });
       toast.success("Account created successfully");
     } catch (error) {
-      toast.error(error.response.data.message);
+      toast.error(error.response.data.message ?? "Something went wrong");
     } finally {
       set({ isSignInUp: false });
     }
@@ -39,10 +40,10 @@ export const useAuthStore = create((set) => ({
     set({ isLoggingIn: true });
     try {
       const res = await axiosInstance.post("/auth/login", data);
-      set({ authUser: res.data });
+      set({ authUser: res.data.user });
       toast.success("Logged In successfully");
     } catch (error) {
-      toast.error(error.response.data.message);
+      toast.error(error.response.data.message ?? "Something went wrong");
     } finally {
       set({ isLoggingIn: false });
     }
@@ -54,7 +55,22 @@ export const useAuthStore = create((set) => ({
       set({ authUser: null });
       toast.success("Logged out successfully");
     } catch (error) {
-      toast.error(error.response.data.message);
+      toast.error(error.response.data.message ?? "Something went wrong");
+    }
+  },
+
+  updateProfile: async (data) => {
+    set({ isUpdatingProfile: true });
+    try {
+      const res = await axiosInstance.put("/auth/profile", data);
+      set({ authUser: res.data.user });
+      toast.success("Profile updated successfully");
+    } catch (error) {
+      console.log(error);
+
+      toast.error(error.response?.data?.message ?? "Something went wrong");
+    } finally {
+      set({ isUpdatingProfile: false });
     }
   },
 }));
