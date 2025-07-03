@@ -1,5 +1,44 @@
-export const getAllUsersForSideBar = async (req, res) => {};
+import Message from "../models/message.model";
+import User from "../models/user.model";
 
-export const getAllMessagesForChat = async (req, res) => {};
+export const getAllUsersForSideBar = async (req, res) => {
+  const loggedInUserId = req.user._id;
+
+  try {
+    const users = await User.find({ _id: { $ne: loggedInUserId } });
+
+    return res.status(200).json({ success: true, users });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      success: false,
+      message: error?.message ?? "Internal server error",
+    });
+  }
+};
+
+export const getAllMessagesForChat = async (req, res) => {
+  const { id: recieverId } = req.params;
+  const senderId = req.user._id;
+
+  try {
+    const messages = await Message.find({
+      $or: [
+        { senderId, recieverId },
+        { senderId: recieverId, recieverId: senderId },
+      ],
+    });
+
+    return res.status(200).json({ success: true, messages });
+  } catch (error) {
+    console.error(error);
+    return res
+      .status(500)
+      .json({
+        success: false,
+        message: error?.message ?? "Internal server error",
+      });
+  }
+};
 
 export const sendMessage = async (req, res) => {};
