@@ -17,7 +17,7 @@ export const signup = async (req, res) => {
     });
 
   try {
-    const existingUser = User.findOne({ email });
+    const existingUser = await User.findOne({ email });
 
     if (existingUser)
       return res
@@ -32,7 +32,7 @@ export const signup = async (req, res) => {
 
     await user.save();
 
-    const token = user.generateAuthToken();
+    const token = await user.generateAuthToken();
 
     res
       .status(201)
@@ -55,21 +55,21 @@ export const login = async (req, res) => {
       .status(400)
       .json({ success: false, message: "All fields are required" });
   try {
-    const user = User.findOne({ email });
+    const user = await User.findOne({ email });
 
     if (!user)
       return res
         .status(400)
         .json({ success: false, message: "Invalid email or password" });
 
-    const isMatch = user.comparePassword(password);
+    const isMatch = await user.comparePassword(password);
 
     if (!isMatch)
       return res
         .status(400)
         .json({ success: false, message: "Invalid email or password" });
 
-    const token = user.generateAuthToken();
+    const token = await user.generateAuthToken();
 
     res
       .status(200)

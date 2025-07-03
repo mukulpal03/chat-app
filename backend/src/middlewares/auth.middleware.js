@@ -1,4 +1,5 @@
-import User from "../models/user.model";
+import User from "../models/user.model.js";
+import jwt from "jsonwebtoken";
 
 export const isLoggedIn = async (req, res, next) => {
   const token = req.cookies.token;
@@ -16,7 +17,7 @@ export const isLoggedIn = async (req, res, next) => {
         .status(401)
         .json({ success: false, message: "Unauthorized - Invalid token" });
 
-    const user = await User.findById(decoded._id);
+    const user = await User.findById(decoded._id).select("-password");
 
     if (!user)
       return res
