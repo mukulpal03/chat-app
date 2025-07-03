@@ -1,10 +1,10 @@
 import { Router } from "express";
-import { isLoggedIn } from "../middlewares/auth.middleware";
+import { isLoggedIn } from "../middlewares/auth.middleware.js";
 import {
   getAllMessagesForChat,
   getAllUsersForSideBar,
   sendMessage,
-} from "../controllers/message.controllers";
+} from "../controllers/message.controllers.js";
 
 const router = Router();
 
