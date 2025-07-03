@@ -1,10 +1,17 @@
 import { Router } from "express";
-import { login, logout, signup } from "../controllers/auth.controllers.js";
+import {
+  login,
+  logout,
+  signup,
+  updateProfile,
+} from "../controllers/auth.controllers.js";
+import { isLoggedIn } from "../middlewares/auth.middleware.js";
 
 const router = Router();
 
 router.route("/signup").post(signup);
 router.route("/login").post(login);
 router.route("/logout").post(logout);
+router.route("/profile").put(isLoggedIn, updateProfile);
 
 export default router;

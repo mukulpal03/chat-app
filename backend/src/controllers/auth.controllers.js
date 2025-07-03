@@ -1,3 +1,4 @@
+import cloudinary from "../lib/cloudinary.js";
 import { cookieOptions } from "../lib/utils.js";
 import User from "../models/user.model.js";
 
@@ -89,6 +90,34 @@ export const logout = (req, res) => {
       .status(200)
       .clearCookie("token")
       .json({ success: true, message: "Logged out successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: error?.message ?? "Internal server error",
+    });
+  }
+};
+
+export const updateProfile = async (req, res) => {
+  const { profilePic } = req.body;
+  const userId = req.user._id;
+
+  if (!profilePic)
+    return res
+      .status(400)
+      .json({ success: false, message: "profilePic is required" });
+
+  try {
+    const res = await cloudinary.uploader.upload(profilePic);
+
+    const user = await User.findByIdAndUpdate(
+      userId,
+      { profilePic: res.secure_url },
+      { new: true }
+    );
+
+    return res.status(200).json({ success: true, user });
   } catch (error) {
     console.error(error);
     res.status(500).json({
