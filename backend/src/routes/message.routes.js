@@ -14,6 +14,6 @@ router.route("/").get(getAllUsersForSideBar);
 
 router.route("/:id").get(getAllMessagesForChat);
 
-router.route("/").post(sendMessage);
+router.route("/:id").post(sendMessage);
 
 export default router;
