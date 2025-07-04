@@ -8,7 +8,7 @@ import {
 
 const router = Router();
 
-// router.use(isLoggedIn);
+router.use(isLoggedIn);
 
 router.route("/users").get(getAllUsersForSideBar);
 
