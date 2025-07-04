@@ -17,7 +17,7 @@ export const useAuthStore = create((set, get) => ({
 
   checkAuth: async () => {
     try {
-      const res = await axiosInstance.get("/auth/check-auth");
+      const res = await axiosInstance.get("/api/auth/check-auth");
 
       set({ authUser: res.data.user });
       get().connectSocket();
@@ -32,7 +32,7 @@ export const useAuthStore = create((set, get) => ({
     set({ isSignInUp: true });
 
     try {
-      const res = await axiosInstance.post("/auth/signup", data);
+      const res = await axiosInstance.post("/api/auth/signup", data);
       set({ authUser: res.data.user });
       get().connectSocket();
       toast.success("Account created successfully");
@@ -46,7 +46,7 @@ export const useAuthStore = create((set, get) => ({
   login: async (data) => {
     set({ isLoggingIn: true });
     try {
-      const res = await axiosInstance.post("/auth/login", data);
+      const res = await axiosInstance.post("/api/auth/login", data);
       set({ authUser: res.data.user });
       get().connectSocket();
       toast.success("Logged In successfully");
@@ -59,7 +59,7 @@ export const useAuthStore = create((set, get) => ({
 
   logout: async () => {
     try {
-      await axiosInstance.post("/auth/logout");
+      await axiosInstance.post("/api/auth/logout");
       set({ authUser: null });
       toast.success("Logged out successfully");
       get().disconnetSocket();
@@ -71,7 +71,7 @@ export const useAuthStore = create((set, get) => ({
   updateProfile: async (data) => {
     set({ isUpdatingProfile: true });
     try {
-      const res = await axiosInstance.put("/auth/profile", data);
+      const res = await axiosInstance.put("/api/auth/profile", data);
       set({ authUser: res.data.user });
       toast.success("Profile updated successfully");
     } catch (error) {
@@ -88,10 +88,13 @@ export const useAuthStore = create((set, get) => ({
     if (!authUser || get().socket?.connected) return;
 
     const socket = io(BASE_URL, {
+      transports: ["websocket", "polling"],
+      withCredentials: true,
       query: {
         userId: authUser._id,
       },
     });
+
     socket.connect();
 
     set({ socket: socket });
