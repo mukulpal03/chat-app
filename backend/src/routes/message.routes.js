@@ -10,7 +10,7 @@ const router = Router();
 
 router.use(isLoggedIn);
 
-router.route("/").get(getAllUsersForSideBar);
+router.route("/users").get(getAllUsersForSideBar);
 
 router.route("/:id").get(getAllMessagesForChat);
 
