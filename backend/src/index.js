@@ -8,7 +8,7 @@ import messageRoutes from "./routes/message.routes.js";
 import { app, server } from "./lib/socket.js";
 import path from "path";
 
-const PORT = process.env.PORT ?? 4000;
+const PORT = process.env.PORT ?? 4001;
 const __dirname = path.resolve();
 
 app.use(express.json({ limit: "10mb" }));
@@ -30,8 +30,8 @@ if (process.env.NODE_ENV === "production") {
   console.log("Static path:", path.join(__dirname, "../frontend/dist"));
   app.use(express.static(path.join(__dirname, "../frontend/dist")));
 
-  app.get("*", (req, res) => {
-    res.sendFile(path.join(__dirname, "../frontend", "dist", "index.html"));
+  app.get("/*", (req, res) => {
+    res.sendFile(path.join(__dirname, "../frontend/dist/index.html"));
   });
 }
 
