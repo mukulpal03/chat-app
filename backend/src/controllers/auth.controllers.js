@@ -88,7 +88,7 @@ export const logout = async (req, res) => {
   try {
     return res
       .status(200)
-      .clearCookie("token")
+      .clearCookie("token", cookieOptions)
       .json({ success: true, message: "Logged out successfully" });
   } catch (error) {
     console.error(error);
